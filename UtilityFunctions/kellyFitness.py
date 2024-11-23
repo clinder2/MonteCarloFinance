@@ -53,15 +53,28 @@ def fitness(popSize, pop, iterations, prob, gammas, lambdas):
                 r2[i] = 1 - pop[i][0] * lamA - pop[i][1] * lamB
         r = r2
         F = F * r
-        history.append(F[0])
+        history.append(F)
     ans = {'F': F, 'history': history}
     return ans
-ans = fitness(1, [[.4, .4, .2]], 10, [.4,.4,.2,.4,.4,.2], [1,1], [1,1])
+
+iter = 10
+size = 20
+initPop = [[np.random.rand() for _ in range(0, 3)] for _ in range(0, size)]
+for i in range(0, size):
+    norm = sum(initPop[i])
+    for j in range(0, 3):
+        initPop[i][j] /= norm
+stats = [.7,.1,.2,.4,.4,.2]
+gammas = [1,1]
+lambdas = [1,1]
+ans = fitness(size, initPop, iter, stats, gammas, lambdas)
 F = ans["F"]
-print(math.exp((1/10)*math.log10(F[0])))
-print(ans["history"])
+for i in range(0, len(F)):
+    print(math.exp((1/10)*math.log10(F[i])))
+#print(ans["history"])
 time = []
-for i in range(1, 11):
+for i in range(1, size+1):
     time.append(i)
-plt.plot(time, ans["history"])
+for i in range(0, iter):
+    plt.plot(time, ans["history"][i])
 plt.show()
