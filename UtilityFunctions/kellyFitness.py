@@ -54,6 +54,8 @@ def fitness(popSize, pop, iterations, prob, gammas, lambdas):
         r = r2
         F = F * r
         history.append(F)
+    for i in range(0, len(F)):
+        F[i] = math.exp((1/iterations)*math.log10(F[i]))
     ans = {'F': F, 'history': history}
     return ans
 
@@ -70,7 +72,7 @@ lambdas = [1,1]
 ans = fitness(size, initPop, iter, stats, gammas, lambdas)
 F = ans["F"]
 for i in range(0, len(F)):
-    print(math.exp((1/10)*math.log10(F[i])))
+    print(F[i])
 #print(ans["history"])
 time = []
 for i in range(1, size+1):
