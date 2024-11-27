@@ -1,10 +1,12 @@
 # Genetic algorithm to solve nonlinear systems of equ. for capital allocation
 # chromosome is fraction s.t. 0<f<1
+from kellyFitness import fitness
 import numpy as np
 import math
 
 def GA(popSize, numPlays, generations):
-    chromPop = [[np.random.rand() for _ in range(0, popSize)] for _ in range(0, numPlays+1)] # add extra play for unallocated capital
+    chromPop = np.random.rand(numPlays+1, popSize)
+    #chromPop = [[np.random.rand() for _ in range(0, popSize)] for _ in range(0, numPlays+1)] # add extra play for unallocated capital
     for t in range(0, popSize):
         temp = 0
         for row in range(0,numPlays+1):
@@ -16,6 +18,10 @@ def GA(popSize, numPlays, generations):
     epsilon = 0.07 # mutation range
     evect = np.full((numPlays+1, popSize), epsilon)
     bestFitness = 0
+    stats = [.7,.1,.2,.4,.4,.2]
+    gammas = [1,1]
+    lambdas = [1,1]
+    #data = fitness(popSize, chromPop, 10, stats, gammas, lambdas)
     for i in range(0, generations):
         ## MUTATION
         r = np.random.normal(.5, .5, popSize)
@@ -35,25 +41,20 @@ def GA(popSize, numPlays, generations):
             chromPop[row] -= chromPop[row] * r
         chromPop += mutations
         ## MATING (crossover)
-        for row in range(0, numPlays+1):
-            index = 1
-            if row % 2 == 0:
-                while index < popSize:
-                    temp = chromPop[row][index]
-                    chromPop[row][index] = chromPop[row][index-1]
-                    chromPop[row][index-1] = temp
-                    index = index + 2
-            else:
-                index = 2
-                while index < popSize:
-                    temp = chromPop[row][index]
-                    chromPop[row][index] = chromPop[row][index-1]
-                    chromPop[row][index-1] = temp
-                    index = index + 2
+        permPop = chromPop.copy()
+        for col in range(0, popSize):
+            k = col + (popSize - col) * np.random.rand()
+            k = int(k)
+            temp = permPop[:,col].copy()
+            permPop[:,col] = permPop[:,k]
+            permPop[:,k] = temp
+        nextGen = chromPop + orelax*(permPop - chromPop)*np.random.rand(numPlays+1, popSize)
         for t in range(0, popSize):
             temp = sum(chromPop[:,t])
             chromPop[:,t] /= temp
         for t in range(0, popSize):
             print(chromPop[:,t])
+        for t in range(0, popSize):
+            print(nextGen[:,t] - chromPop[:,t])
 
-GA(3, 2, 1)
+GA(10, 2, 1)
