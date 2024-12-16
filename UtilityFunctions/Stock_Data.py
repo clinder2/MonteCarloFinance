@@ -7,10 +7,12 @@ from GA_Sharpe_FItness import GA
 from sharpeFitness import fitness
 from Backtesting import backtesting
 
-stocks = ["AAPL", "GOOG", "NVDA", "HD", "DIS"]
+stocks = ["AAPL", "GOOG", "NVDA", "HD", "MSFT"]
 start = '2020-01-01'
 data = yf.download(stocks, start = start)['Adj Close']
 benchmark = yf.download('^OEX', start=start)['Adj Close']
+
+print(pd.Series(data['AAPL']).iloc[0:3])
 
 """ allocation = GA(30, 5, 50, data)
 print(allocation) """

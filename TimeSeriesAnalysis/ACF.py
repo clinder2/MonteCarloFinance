@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from statsmodels.graphics.tsaplots import plot_acf
 from statsmodels.tsa.ar_model import AutoReg
+from statsmodels.tsa.arima.model import ARIMA
 import yfinance as yf
 
 stocks = ["NVDA"]
@@ -33,6 +34,14 @@ series = pd.Series(rand_walk)
 diff = series.diff()
 #x = pd.plotting.autocorrelation_plot(stock_diff)
 #x.plot()
-x2 = plot_acf(stock_diff.dropna(), lags=np.arange(len(stock_diff)-1))
+#x2 = plot_acf(stock_diff.dropna(), lags=np.arange(len(stock_diff)-1))
 #plt.plot(stock_diff)
+ARMA = ARIMA(stock_diff, order=(2,0,2)).fit()
+print(ARMA.params)
+forecast = ARMA.forecast(steps=40)
+""" fig = plt.figure(figsize=(12,8))
+ax = fig.add_subplot(111)
+ax = ARMA.resid.plot(ax=ax) """
+x3 = plot_acf(ARMA.resid.dropna(), lags=np.arange(len(ARMA.resid)-1))
+#plt.plot(forecast)
 plt.show()
