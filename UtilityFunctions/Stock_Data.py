@@ -5,14 +5,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from GA_Sharpe_FItness import GA
 from sharpeFitness import fitness
-from Backtesting import backtesting
+from Backtesting import backtesting, monthly_backtesting
 
 stocks = ["AAPL", "GOOG", "NVDA", "HD", "MSFT"]
-start = '2020-01-01'
+start = '2024-01-01'
 data = yf.download(stocks, start = start)['Adj Close']
 benchmark = yf.download('^OEX', start=start)['Adj Close']
 
-print(pd.Series(data['AAPL']).iloc[0:3])
+print(data['AAPL'].iloc[3:6])
 
 """ allocation = GA(30, 5, 50, data)
 print(allocation) """
@@ -20,4 +20,4 @@ print(allocation) """
 """ data.plot(figsize=(12,6))
 plt.show() """
 
-backtesting(GA, data, benchmark, stocks)
+monthly_backtesting(GA, data, benchmark, stocks)

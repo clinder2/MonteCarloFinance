@@ -15,14 +15,15 @@ def AR(p, data):
     for i in range(p, len(TS)):
         y[i-p] = TS[i]
         X[i-p,:] = TS.iloc[i-p:i]
-    for j in range(0, p):
-        X[:,j] -= np.sum(X[:,j])/n
+    """ for j in range(0, p):
+        X[:,j] -= np.sum(X[:,j])/n """
+    X = (X - X.mean(axis=0))/X.std(axis=0)
     params = RR.rReg(X, y)
     return params
 
 if __name__ == "__main__":
     stocks = ["AAPL"]
-    start = '2024-12-01'
+    start = '2024-10-01'
     data = yf.download(stocks, start = start)['Adj Close']
     data = np.log(data).diff().dropna()
     params = AR(3,data)
@@ -34,11 +35,11 @@ if __name__ == "__main__":
     sim.append(TS[1])
     sim.append(TS[2])
     for i in range(3, len(data)):
-        sim.append(params[0] * sim[i-1] + params[1] * sim[i-2] + params[2] * sim[i-3] + 0*r[i-3])
-        #sim.append(.9664 * sim[i-1] + -0.2389 * sim[i-2] + 0.1284 * sim[i-3] + 0*r[i-3])
+        sim.append(params[2] * sim[i-1] + params[1] * sim[i-2] + params[0] * sim[i-3] + 0*r[i-3])
+        #sim.append(.04 * sim[i-1] + -.14 * sim[i-2] + -.09 * sim[i-3] + 0*r[i-3])
     sim = pd.Series(sim)
-    print(sim)
-    print(TS)
+    #print(sim)
+    #print(TS)
     fitFinal = ARIMA(data, order=(3,0,0)).fit()
     print(params)
     print(fitFinal.summary())

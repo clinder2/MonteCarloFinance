@@ -6,7 +6,7 @@ def rReg(X, y):
     T = X.T
     A = np.dot(T, X)
     L = np.identity(len(X[0]))
-    A = A + L
+    A = A + l * L
     A = np.linalg.inv(A)
     A = np.dot(A, T)
     beta = np.dot(A, y)
